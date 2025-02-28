@@ -3,80 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мой Telegram Mini App</title>
+    <title>Telegram Mini App</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
-            max-width: 400px;
-            margin: 0 auto;
             text-align: center;
+            max-width: 400px;
+            margin: auto;
+            background-color: #f4f4f4;
             padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
         button {
-            display: block;
             width: 100%;
             padding: 10px;
-            margin-top: 10px;
-            background: #007bff;
+            margin: 5px 0;
+            font-size: 18px;
+            background-color: #0088cc;
             color: white;
             border: none;
+            border-radius: 5px;
             cursor: pointer;
         }
         button:hover {
-            background: #0056b3;
+            background-color: #0077b3;
         }
     </style>
 </head>
 <body>
-    <h1>Добро пожаловать!</h1>
-    <p id="user-info">Загрузка...</p>
 
-    <button onclick="downloadFile()">📂 Скачать файл</button>
-    <button onclick="goToBot()">🤖 Перейти в другой бот</button>
-    <button onclick="rateManager()">⭐ Оценить менеджера</button>
+<h2>Ваши данные</h2>
+<p><strong>Никнейм:</strong> <span id="username">Загрузка...</span></p>
+<p><strong>Статус:</strong> <span id="status">Загрузка...</span></p>
+<p><strong>Следующий шаг:</strong> <span id="next_step">Загрузка...</span></p>
+<p><strong>Ваш менеджер:</strong> <span id="manager">Загрузка...</span></p>
 
-    <script>
-        async function getUserInfo() {
-            const initData = window.Telegram.WebApp.initData;
-            if (!initData) {
-                document.getElementById("user-info").innerText = "Ошибка загрузки данных.";
-                return;
-            }
+<button onclick="downloadFile()">Скачать файл</button>
+<button onclick="openBot()">Перейти в бот</button>
+<button onclick="rateManager()">Оставить отзыв</button>
 
-            const urlParams = new URLSearchParams(initData);
-            const chat_id = urlParams.get("user.id");
-            const username = urlParams.get("user.username");
+<script>
+    let tg = window.Telegram.WebApp;
+    tg.expand();  // Фиксированный размер окна
 
-            const response = await fetch("/get_user", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ chat_id, username })
-            });
+    async function registerUser() {
+        let response = await fetch("/register_user/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                chat_id: tg.initDataUnsafe.user.id,
+                username: tg.initDataUnsafe.user.username
+            })
+        });
+        let data = await response.json();
+        console.log(data.message);
+    }
 
-            const data = await response.json();
-            document.getElementById("user-info").innerHTML = `
-                <strong>👤 Пользователь:</strong> @${data.username} <br>
-                <strong>📌 Статус:</strong> ${data.status} <br>
-                <strong>➡ Следующий шаг:</strong> ${data.next_step} <br>
-                <strong>👨‍💼 Менеджер:</strong> ${data.manager}
-            `;
+    async function fetchUserData() {
+        let response = await fetch("/get_user_data/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                chat_id: tg.initDataUnsafe.user.id,
+                username: tg.initDataUnsafe.user.username
+            })
+        });
+        let data = await response.json();
+
+        if (data.error) {
+            alert("Ошибка: " + data.error);
+        } else {
+            document.getElementById("username").innerText = data.username;
+            document.getElementById("status").innerText = data.status;
+            document.getElementById("next_step").innerText = data.next_step;
+            document.getElementById("manager").innerText = data.manager;
         }
+    }
 
-        function downloadFile() {
-            window.open("https://example.com/file.pdf", "_blank");
-        }
+    function downloadFile() {
+        window.location.href = "/static/sample.pdf";
+    }
 
-        function goToBot() {
-            window.Telegram.WebApp.openTelegramLink("https://t.me/OtherBot");
-        }
+    function openBot() {
+        window.location.href = "https://t.me/YourBot";
+    }
 
-        function rateManager() {
-            window.open("https://2gis.ru/", "_blank");
-        }
+    function rateManager() {
+        window.location.href = "https://2gis.ru/";
+    }
 
-        getUserInfo();
-    </script>
+    // Регистрируем пользователя и загружаем данные
+    registerUser().then(fetchUserData);
+</script>
+
 </body>
 </html>

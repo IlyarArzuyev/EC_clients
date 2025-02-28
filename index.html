@@ -8,79 +8,54 @@
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            margin: 20px;
-        }
-        .container {
-            width: 300px;
+            max-width: 400px;
             margin: auto;
             padding: 20px;
-            border: 1px solid #ccc;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background: white;
+            padding: 20px;
             border-radius: 10px;
-            box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.2);
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
         }
         button {
             display: block;
             width: 100%;
-            padding: 10px;
             margin: 10px 0;
-            background-color: #007bff;
-            color: white;
+            padding: 10px;
             border: none;
+            background-color: #0088cc;
+            color: white;
+            font-size: 16px;
             border-radius: 5px;
             cursor: pointer;
+        }
+        button:hover {
+            background-color: #0077b6;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>Ваш статус</h2>
-        <p><b>Статус:</b> <span id="status">Загрузка...</span></p>
-        <p><b>Следующий шаг:</b> <span id="next_step">Загрузка...</span></p>
-        <p><b>Менеджер:</b> <span id="manager">Загрузка...</span></p>
-
-        <button onclick="downloadFile()">Скачать файл</button>
-        <button onclick="goToBot()">Перейти в бот</button>
-        <button onclick="rateManager()">Оценить менеджера</button>
+        <h2>Добро пожаловать!</h2>
+        <p id="user-info">Загрузка данных...</p>
+        <button onclick="window.location.href='/download'">Скачать файл</button>
+        <button onclick="window.location.href='/go_to_bot'">Перейти в бот</button>
+        <button onclick="window.location.href='/rate_manager'">Оценить менеджера</button>
     </div>
 
     <script>
-       function getUserData() {
-    Telegram.WebApp.expand();
-    const initData = Telegram.WebApp.initDataUnsafe;
-    console.log(initData);  // Проверяем, что данные приходят
-
-    if (!initData || !initData.user) return;
-
-    fetch('/get_user_data', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            chat_id: initData.user.id,
-            username: initData.user.username
+        fetch('/get_user', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({chat_id: '12345', username: 'test_user'})
         })
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log(data);  // Проверяем ответ сервера
-        document.getElementById("status").textContent = data.status;
-        document.getElementById("next_step").textContent = data.next_step;
-        document.getElementById("manager").textContent = data.manager;
-    });
-}
-
-        function downloadFile() {
-            window.location.href = "/download";
-        }
-
-        function goToBot() {
-            window.location.href = "https://t.me/YOUR_BOT_USERNAME";
-        }
-
-        function rateManager() {
-            window.location.href = "https://2gis.ru/";
-        }
-
-        getUserData();
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('user-info').innerText = `Привет, ${data.username}!\nСтатус: ${data.status}\nСледующий шаг: ${data.next_step}\nМенеджер: ${data.manager}`;
+        })
+        .catch(error => console.error('Ошибка:', error));
     </script>
 </body>
 </html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мой Telegram Mini App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 400px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 20px;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            background: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Добро пожаловать!</h1>
+    <p id="user-info">Загрузка...</p>
+
+    <button onclick="downloadFile()">📂 Скачать файл</button>
+    <button onclick="goToBot()">🤖 Перейти в другой бот</button>
+    <button onclick="rateManager()">⭐ Оценить менеджера</button>
+
+    <script>
+        async function getUserInfo() {
+            const initData = window.Telegram.WebApp.initData;
+            if (!initData) {
+                document.getElementById("user-info").innerText = "Ошибка загрузки данных.";
+                return;
+            }
+
+            const urlParams = new URLSearchParams(initData);
+            const chat_id = urlParams.get("user.id");
+            const username = urlParams.get("user.username");
+
+            const response = await fetch("/get_user", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ chat_id, username })
+            });
+
+            const data = await response.json();
+            document.getElementById("user-info").innerHTML = `
+                <strong>👤 Пользователь:</strong> @${data.username} <br>
+                <strong>📌 Статус:</strong> ${data.status} <br>
+                <strong>➡ Следующий шаг:</strong> ${data.next_step} <br>
+                <strong>👨‍💼 Менеджер:</strong> ${data.manager}
+            `;
+        }
+
+        function downloadFile() {
+            window.open("https://example.com/file.pdf", "_blank");
+        }
+
+        function goToBot() {
+            window.Telegram.WebApp.openTelegramLink("https://t.me/OtherBot");
+        }
+
+        function rateManager() {
+            window.open("https://2gis.ru/", "_blank");
+        }
+
+        getUserInfo();
+    </script>
+</body>
+</html>

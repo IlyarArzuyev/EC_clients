@@ -1,124 +1,87 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Мой прогресс</title>
+    <title>Прогресс</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        /* Фиксированный размер окна */
         body {
             margin: 0;
             padding: 20px;
             width: 100%;
             height: 100vh;
-            box-sizing: border-box;
+            background: #f0f2f5;
             font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            overflow: hidden;
         }
-
         .container {
-            width: 100%;
             max-width: 400px;
             margin: 0 auto;
             background: white;
-            padding: 25px;
+            padding: 20px;
             border-radius: 15px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-
         .header {
             text-align: center;
             color: #2c3e50;
             margin-bottom: 25px;
-            font-size: 24px;
-            font-weight: bold;
         }
-
-        .status-card {
-            background: #ffffff;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-
         .status-item {
             margin: 15px 0;
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            font-size: 16px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
         }
-
-        .badge {
-            background: #3498db;
-            color: white;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 14px;
-        }
-
         button {
             width: 100%;
-            padding: 14px;
-            margin: 10px 0;
-            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            padding: 12px;
+            margin: 8px 0;
+            background: #3498db;
             color: white;
             border: none;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 16px;
-            transition: transform 0.2s;
-        }
-
-        button:hover {
-            transform: translateY(-2px);
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1 class="header">📊 Мой прогресс</h1>
+        <h1 class="header">Ваш прогресс</h1>
         <div id="status">
-            <div class="status-card">
-                <div class="status-item">
-                    <span>Ваш Chat ID:</span>
-                    <span id="chatId" class="badge">...</span>
-                </div>
-                <div class="status-item">
-                    <span>Текущий шаг:</span>
-                    <span id="currentStep" class="badge">...</span>
-                </div>
-                <div class="status-item">
-                    <span>Следующий шаг:</span>
-                    <span id="nextStep" class="badge">...</span>
-                </div>
-                <div class="status-item">
-                    <span>Менеджер:</span>
-                    <span id="manager">...</span>
-                </div>
+            <div class="status-item">
+                <span>Chat ID:</span>
+                <span id="chatId">...</span>
+            </div>
+            <div class="status-item">
+                <span>Текущий шаг:</span>
+                <span id="currentStep">...</span>
+            </div>
+            <div class="status-item">
+                <span>Менеджер:</span>
+                <span id="manager">...</span>
             </div>
         </div>
-        <button onclick="refreshData()">🔄 Обновить данные</button>
+        <button onclick="refreshData()">Обновить</button>
     </div>
 
     <script>
-        // Конфигурация
+        // Конфигурация (ЗАМЕНИТЕ НА СВОЙ URL!)
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzeC5R3WmU0clDybZCnxkcs_wPCub-gf4UMRKzrKsj2KPw_U4FafMgBYGhIzzu-yjoIAQ/exec';
 
         // Инициализация Telegram Web App
         const tg = window.Telegram.WebApp;
         tg.expand();
-        const user = tg.initDataUnsafe.user;
-        
-        // Автоматическая запись данных при первом открытии
-        if (user) {
+
+        // Автоматическая запись данных при открытии
+        if (tg.initDataUnsafe.user) {
+            const user = tg.initDataUnsafe.user;
             fetch(GOOGLE_SCRIPT_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    chatId: user.id,
-                    username: user.username || 'Без имени'
+                body: JSON.stringify({ 
+                    chatId: user.id, 
+                    username: user.username || 'Без имени' 
                 })
             });
         }
@@ -128,15 +91,11 @@
             try {
                 const response = await fetch(GOOGLE_SCRIPT_URL);
                 const allData = await response.json();
+                const userData = allData.find(row => row[0] == tg.initDataUnsafe.user.id);
                 
-                // Поиск данных пользователя
-                const userData = allData.find(row => row[0] == user.id);
-                
-                // Обновление интерфейса
                 if (userData) {
                     document.getElementById('chatId').textContent = userData[0];
                     document.getElementById('currentStep').textContent = userData[2];
-                    document.getElementById('nextStep').textContent = userData[3];
                     document.getElementById('manager').textContent = userData[4];
                 }
             } catch (error) {
@@ -146,11 +105,11 @@
 
         // Обновление данных
         function refreshData() {
-            document.querySelectorAll('.badge').forEach(el => el.textContent = '...');
+            document.querySelectorAll('#status span').forEach(el => el.textContent = '...');
             loadData();
         }
 
-        // Первоначальная загрузка
+        // Старт
         loadData();
     </script>
 </body>

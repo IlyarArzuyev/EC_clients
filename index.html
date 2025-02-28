@@ -25,17 +25,15 @@
         document.getElementById('chatId').textContent = chatId;
 
         // Отправляем данные в Google Таблицу
-        fetch('https://script.google.com/macros/s/AKfycbzeC5R3WmU0clDybZCnxkcs_wPCub-gf4UMRKzrKsj2KPw_U4FafMgBYGhIzzu-yjoIAQ/exec', {
+        const googleScriptUrl = 'https://script.google.com/macros/s/AKfycbzeC5R3WmU0clDybZCnxkcs_wPCub-gf4UMRKzrKsj2KPw_U4FafMgBYGhIzzu-yjoIAQ/exec'; // Замените на ваш URL
+        fetch(googleScriptUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ chatId: chatId })
         })
-        .then(response => {
-            if (response.ok) {
-                console.log('Данные отправлены!');
-            } else {
-                console.error('Ошибка отправки');
-            }
+        .then(response => response.text()) // Читаем ответ как текст
+        .then(result => {
+            console.log('Ответ от Google Apps Script:', result);
         })
         .catch(error => console.error('Ошибка:', error));
     </script>

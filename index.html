@@ -44,26 +44,29 @@
     </div>
 
     <script>
-        function getUserData() {
-            Telegram.WebApp.expand();
-            const initData = Telegram.WebApp.initDataUnsafe;
-            if (!initData || !initData.user) return;
+       function getUserData() {
+    Telegram.WebApp.expand();
+    const initData = Telegram.WebApp.initDataUnsafe;
+    console.log(initData);  // Проверяем, что данные приходят
 
-            fetch('/get_user_data', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    chat_id: initData.user.id,
-                    username: initData.user.username
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById("status").textContent = data.status;
-                document.getElementById("next_step").textContent = data.next_step;
-                document.getElementById("manager").textContent = data.manager;
-            });
-        }
+    if (!initData || !initData.user) return;
+
+    fetch('/get_user_data', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            chat_id: initData.user.id,
+            username: initData.user.username
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data);  // Проверяем ответ сервера
+        document.getElementById("status").textContent = data.status;
+        document.getElementById("next_step").textContent = data.next_step;
+        document.getElementById("manager").textContent = data.manager;
+    });
+}
 
         function downloadFile() {
             window.location.href = "/download";

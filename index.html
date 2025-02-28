@@ -12,68 +12,94 @@
             height: 100vh;
             box-sizing: border-box;
             font-family: Arial, sans-serif;
-            background: #f5f5f5;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            overflow: hidden;
         }
 
         .container {
+            width: 100%;
             max-width: 400px;
             margin: 0 auto;
             background: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
         }
 
         .header {
             text-align: center;
             color: #2c3e50;
             margin-bottom: 25px;
+            font-size: 24px;
+            font-weight: bold;
         }
 
         .status-card {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
 
         .status-item {
-            margin: 10px 0;
+            margin: 15px 0;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            font-size: 16px;
         }
 
         .badge {
             background: #3498db;
             color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.9em;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
         }
 
         button {
             width: 100%;
-            padding: 12px;
-            margin: 5px 0;
-            background: #3498db;
+            padding: 14px;
+            margin: 10px 0;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
             color: white;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: background 0.3s;
+            font-size: 16px;
+            transition: transform 0.2s;
         }
 
         button:hover {
-            background: #2980b9;
+            transform: translateY(-2px);
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1 class="header">Мой прогресс</h1>
-        <div id="status"></div>
-        <button onclick="refreshData()">Обновить данные</button>
+        <h1 class="header">📊 Мой прогресс</h1>
+        <div id="status">
+            <div class="status-card">
+                <div class="status-item">
+                    <span>Ваш Chat ID:</span>
+                    <span id="chatId" class="badge">...</span>
+                </div>
+                <div class="status-item">
+                    <span>Текущий шаг:</span>
+                    <span id="currentStep" class="badge">...</span>
+                </div>
+                <div class="status-item">
+                    <span>Следующий шаг:</span>
+                    <span id="nextStep" class="badge">...</span>
+                </div>
+                <div class="status-item">
+                    <span>Менеджер:</span>
+                    <span id="manager">...</span>
+                </div>
+            </div>
+        </div>
+        <button onclick="refreshData()">🔄 Обновить данные</button>
     </div>
 
     <script>
@@ -82,54 +108,49 @@
 
         // Инициализация Telegram Web App
         const tg = window.Telegram.WebApp;
-        tg.expand(); // Раскрываем приложение на весь экран
-        tg.MainButton.hide();
-
-        // Получаем данные пользователя
+        tg.expand();
         const user = tg.initDataUnsafe.user;
-        const chatId = user?.id;
+        
+        // Автоматическая запись данных при первом открытии
+        if (user) {
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chatId: user.id,
+                    username: user.username || 'Без имени'
+                })
+            });
+        }
 
-        // Функция для загрузки данных
+        // Загрузка данных
         async function loadData() {
             try {
                 const response = await fetch(GOOGLE_SCRIPT_URL);
                 const allData = await response.json();
                 
-                // Ищем запись текущего пользователя
-                const userData = allData.find(row => row[0] == chatId);
+                // Поиск данных пользователя
+                const userData = allData.find(row => row[0] == user.id);
                 
-                // Формируем HTML
-                let html = `
-                    <div class="status-card">
-                        <div class="status-item">
-                            <span>Текущий шаг:</span>
-                            <span class="badge">${userData?.[2] || 'Не начат'}</span>
-                        </div>
-                        <div class="status-item">
-                            <span>Следующий шаг:</span>
-                            <span class="badge">${userData?.[3] || 'Шаг 1'}</span>
-                        </div>
-                        <div class="status-item">
-                            <span>Менеджер:</span>
-                            <span>${userData?.[4] || 'Не назначен'}</span>
-                        </div>
-                    </div>
-                `;
-                
-                document.getElementById('status').innerHTML = html;
+                // Обновление интерфейса
+                if (userData) {
+                    document.getElementById('chatId').textContent = userData[0];
+                    document.getElementById('currentStep').textContent = userData[2];
+                    document.getElementById('nextStep').textContent = userData[3];
+                    document.getElementById('manager').textContent = userData[4];
+                }
             } catch (error) {
                 console.error('Ошибка:', error);
-                document.getElementById('status').innerHTML = '<p>Ошибка загрузки данных</p>';
             }
         }
 
-        // Функция обновления данных
+        // Обновление данных
         function refreshData() {
-            document.getElementById('status').innerHTML = '<p>Загрузка...</p>';
+            document.querySelectorAll('.badge').forEach(el => el.textContent = '...');
             loadData();
         }
 
-        // Первоначальная загрузка данных
+        // Первоначальная загрузка
         loadData();
     </script>
 </body>

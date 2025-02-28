@@ -2,18 +2,18 @@ document.addEventListener("DOMContentLoaded", function () {
     const tg = window.Telegram.WebApp;
     tg.expand();
 
-    console.log("Telegram WebApp Data:", tg.initDataUnsafe); // Показывает все данные от Telegram
-
-    const chat_id = tg.initDataUnsafe.user ? tg.initDataUnsafe.user.id : null;
+    // Получаем никнейм и chat_id
     const username = tg.initDataUnsafe.user ? tg.initDataUnsafe.user.username : "Гость";
+    const chat_id = tg.initDataUnsafe.user ? tg.initDataUnsafe.user.id : null;
 
-    console.log("Chat ID:", chat_id);  // Проверяем, получаем ли chat_id
-    console.log("Username:", username);  // Проверяем, получаем ли username
+    console.log("Chat ID:", chat_id);  // Проверяем, что chat_id есть
+    console.log("Username:", username);  // Проверяем никнейм
 
-    document.getElementById("username").textContent = username || "Неизвестный пользователь";
-    document.getElementById("chat_id").textContent = chat_id || "Не найден";
+    // Отображаем никнейм на экране
+    document.getElementById("username").textContent = username;
 
-    fetch("/get_user_info", {
+    // Отправляем chat_id и username на сервер
+    fetch("/save_user", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -23,6 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
     .then(response => response.json())
     .then(data => {
         console.log("Ответ сервера:", data);
+
         if (data.status === "success") {
             document.getElementById("step").textContent = data.step;
             document.getElementById("next_step").textContent = data.next_step;

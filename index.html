@@ -7,110 +7,136 @@
         body {
             margin: 0;
             padding: 20px;
-            width: 100%;
             height: 100vh;
-            background: #f0f2f5;
+            background: #f5f7fa;
             font-family: Arial, sans-serif;
         }
         .container {
             max-width: 400px;
             margin: 0 auto;
             background: white;
-            padding: 20px;
+            padding: 25px;
             border-radius: 15px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        .header {
-            text-align: center;
-            color: #2c3e50;
-            margin-bottom: 25px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
         }
         .status-item {
             margin: 15px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
             display: flex;
             justify-content: space-between;
-            padding: 12px;
-            background: #f8f9fa;
-            border-radius: 8px;
+        }
+        .loading {
+            text-align: center;
+            color: #3498db;
+            font-size: 18px;
         }
         button {
             width: 100%;
-            padding: 12px;
-            margin: 8px 0;
+            padding: 14px;
             background: #3498db;
             color: white;
             border: none;
             border-radius: 8px;
             cursor: pointer;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1 class="header">Ваш прогресс</h1>
+        <h2 style="text-align: center; color: #2c3e50;">Ваш прогресс</h2>
         <div id="status">
-            <div class="status-item">
-                <span>Chat ID:</span>
-                <span id="chatId">...</span>
-            </div>
-            <div class="status-item">
-                <span>Текущий шаг:</span>
-                <span id="currentStep">...</span>
-            </div>
-            <div class="status-item">
-                <span>Менеджер:</span>
-                <span id="manager">...</span>
-            </div>
+            <div class="loading">Загрузка данных...</div>
         </div>
-        <button onclick="refreshData()">Обновить</button>
+        <button onclick="loadData(true)">🔄 Обновить</button>
     </div>
 
     <script>
-        // Конфигурация (ЗАМЕНИТЕ НА СВОЙ URL!)
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzeC5R3WmU0clDybZCnxkcs_wPCub-gf4UMRKzrKsj2KPw_U4FafMgBYGhIzzu-yjoIAQ/exec';
+        // ================== НАСТРОЙКИ ==================
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzeC5R3WmU0clDybZCnxkcs_wPCub-gf4UMRKzrKsj2KPw_U4FafMgBYGhIzzu-yjoIAQ/exec'; // Заменить!
+        // ================================================
 
-        // Инициализация Telegram Web App
+        let userData = null;
         const tg = window.Telegram.WebApp;
+        
+        // Инициализация
         tg.expand();
+        tg.ready();
 
-        // Автоматическая запись данных при открытии
-        if (tg.initDataUnsafe.user) {
-            const user = tg.initDataUnsafe.user;
-            fetch(GOOGLE_SCRIPT_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    chatId: user.id, 
-                    username: user.username || 'Без имени' 
-                })
-            });
-        }
+        // Автоматическая запись данных
+        const initUser = async () => {
+            try {
+                const user = tg.initDataUnsafe.user;
+                if (!user) throw new Error("User not found");
+                
+                // Отправка данных в Google Sheets
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chatId: String(user.id), // Обязательно в строку!
+                        username: user.username || 'Без имени'
+                    })
+                });
+                
+            } catch (error) {
+                console.error('Ошибка инициализации:', error);
+            }
+        };
 
         // Загрузка данных
-        async function loadData() {
+        const loadData = async (force = false) => {
             try {
-                const response = await fetch(GOOGLE_SCRIPT_URL);
+                document.getElementById('status').innerHTML = '<div class="loading">Загрузка данных...</div>';
+                
+                // Добавляем параметр против кэширования
+                const response = await fetch(`${GOOGLE_SCRIPT_URL}?t=${Date.now()}`);
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                
                 const allData = await response.json();
-                const userData = allData.find(row => row[0] == tg.initDataUnsafe.user.id);
+                
+                // Проверка на ошибку от Google Script
+                if (allData.error) throw new Error(allData.error);
+                
+                const user = tg.initDataUnsafe.user;
+                userData = allData.find(row => String(row[0]) === String(user.id));
                 
                 if (userData) {
-                    document.getElementById('chatId').textContent = userData[0];
-                    document.getElementById('currentStep').textContent = userData[2];
-                    document.getElementById('manager').textContent = userData[4];
+                    document.getElementById('status').innerHTML = `
+                        <div class="status-item">
+                            <span>Chat ID:</span>
+                            <strong>${userData[0]}</strong>
+                        </div>
+                        <div class="status-item">
+                            <span>Текущий шаг:</span>
+                            <strong style="color: #27ae60;">${userData[2]}</strong>
+                        </div>
+                        <div class="status-item">
+                            <span>Менеджер:</span>
+                            <strong>${userData[4]}</strong>
+                        </div>
+                    `;
+                } else {
+                    document.getElementById('status').innerHTML = '<div style="color: #e74c3c;">Данные не найдены</div>';
                 }
+                
             } catch (error) {
-                console.error('Ошибка:', error);
+                console.error('Ошибка загрузки:', error);
+                document.getElementById('status').innerHTML = `
+                    <div style="color: #e74c3c;">
+                        Ошибка: ${error.message}
+                    </div>
+                `;
             }
-        }
+        };
 
-        // Обновление данных
-        function refreshData() {
-            document.querySelectorAll('#status span').forEach(el => el.textContent = '...');
-            loadData();
-        }
-
-        // Старт
-        loadData();
+        // Запуск
+        (async () => {
+            await initUser();
+            await loadData();
+        })();
     </script>
 </body>
 </html>

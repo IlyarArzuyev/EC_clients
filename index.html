@@ -5,48 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Telegram Mini App</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script defer src="script.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 20px;
-            background-color: #f4f4f4;
-        }
-        .container {
-            max-width: 400px;
-            margin: auto;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        button {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .download { background: #4CAF50; color: white; }
-        .bot-link { background: #008CBA; color: white; }
-        .review { background: #f39c12; color: white; }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <h2>Привет, <span id="username">Гость</span>!</h2>
+    <p>Ваш статус: <span id="step">Загрузка...</span></p>
+    <p>Следующий шаг: <span id="next_step">Загрузка...</span></p>
+    <p>Ваш менеджер: <span id="manager">Загрузка...</span></p>
 
-<div class="container">
-    <h2>Привет, <span id="username">...</span>!</h2>
-    <p>Ваш текущий шаг: <strong id="step">...</strong></p>
-    <p>Следующий шаг: <strong id="next_step">...</strong></p>
-    <p>Менеджер: <strong id="manager">...</strong></p>
+    <button id="downloadFile">📥 Скачать файл</button>
+    <button id="goToBot">🤖 Перейти в бот</button>
+    <button id="rateManager">⭐ Оценить менеджера</button>
 
-    <button class="download" onclick="downloadFile()">Скачать файл</button>
-    <button class="bot-link" onclick="openBot()">Перейти в бота</button>
-    <button class="review" onclick="leaveReview()">Оставить отзыв</button>
-</div>
-
+    <script src="script.js"></script>
 </body>
 </html>

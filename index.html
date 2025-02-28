@@ -5,18 +5,129 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Telegram Mini App</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f8f9fa;
+            margin: 0;
+        }
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        .status-box {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+        button:hover {
+            opacity: 0.9;
+        }
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
 </head>
 <body>
-    <h2>Привет, <span id="username">Гость</span>!</h2>
-    <p>Ваш статус: <span id="step">Загрузка...</span></p>
-    <p>Следующий шаг: <span id="next_step">Загрузка...</span></p>
-    <p>Ваш менеджер: <span id="manager">Загрузка...</span></p>
+    <div class="container">
+        <div class="status-box">
+            <h2>👋 Привет, <span id="username">...</span></h2>
+            <p>📍 Текущий шаг: <span id="currentStep">...</span></p>
+            <p>🎯 Следующий шаг: <span id="nextStep">...</span></p>
+            <p>👤 Ваш менеджер: <span id="manager">...</span></p>
+        </div>
+        
+        <button id="downloadBtn">📥 Скачать файл</button>
+        <button id="botBtn">🤖 Перейти в бот</button>
+        <button id="reviewBtn">⭐ Оставить отзыв</button>
+        
+        <div id="loader" class="loader"></div>
+        <div id="error" style="color: red; text-align: center;"></div>
+    </div>
 
-    <button id="downloadFile">📥 Скачать файл</button>
-    <button id="goToBot">🤖 Перейти в бот</button>
-    <button id="rateManager">⭐ Оценить менеджера</button>
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        tg.enableClosingConfirmation();
+        
+        const user = tg.initDataUnsafe.user || {};
+        const loader = document.getElementById('loader');
+        const errorDiv = document.getElementById('error');
 
-    <script src="script.js"></script>
+        async function initApp() {
+            try {
+                // Получаем или создаем пользователя
+                const response = await fetch('https://ваш-домен.ru/user', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Telegram-Hash': tg.initData 
+                    },
+                    body: JSON.stringify({
+                        chat_id: user.id,
+                        username: user.username || 'Аноним'
+                    })
+                });
+
+                if (!response.ok) throw new Error('Ошибка сервера');
+                
+                const data = await response.json();
+                updateUI(data);
+                
+            } catch (error) {
+                errorDiv.textContent = `Ошибка: ${error.message}`;
+            } finally {
+                loader.style.display = 'none';
+            }
+        }
+
+        function updateUI(data) {
+            document.getElementById('username').textContent = user.username || 'Гость';
+            document.getElementById('currentStep').textContent = data.current_step;
+            document.getElementById('nextStep').textContent = data.next_step;
+            document.getElementById('manager').textContent = data.manager;
+        }
+
+        // Обработчики кнопок
+        document.getElementById('downloadBtn').addEventListener('click', () => {
+            tg.sendData(JSON.stringify({ action: 'download' }));
+        });
+
+        document.getElementById('botBtn').addEventListener('click', () => {
+            tg.openTelegramLink('https://t.me/your_bot_username');
+        });
+
+        document.getElementById('reviewBtn').addEventListener('click', () => {
+            tg.openLink('https://2gis.ru/feedback', { try_instant_view: true });
+        });
+
+        // Инициализация при загрузке
+        tg.ready();
+        initApp();
+    </script>
 </body>
 </html>

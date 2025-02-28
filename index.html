@@ -1,41 +1,136 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Chat ID App</title>
+    <title>Мой прогресс</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body { display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .content { text-align: center; }
+        /* Фиксированный размер окна */
+        body {
+            margin: 0;
+            padding: 20px;
+            width: 100%;
+            height: 100vh;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 25px;
+        }
+
+        .status-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .status-item {
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .badge {
+            background: #3498db;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin: 5px 0;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #2980b9;
+        }
     </style>
 </head>
 <body>
-    <div class="content">
-        <h1>Ваш Chat ID:</h1>
-        <p id="chatId">Загрузка...</p>
+    <div class="container">
+        <h1 class="header">Мой прогресс</h1>
+        <div id="status"></div>
+        <button onclick="refreshData()">Обновить данные</button>
     </div>
 
     <script>
+        // Конфигурация
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzeC5R3WmU0clDybZCnxkcs_wPCub-gf4UMRKzrKsj2KPw_U4FafMgBYGhIzzu-yjoIAQ/exec';
+
         // Инициализация Telegram Web App
         const tg = window.Telegram.WebApp;
+        tg.expand(); // Раскрываем приложение на весь экран
+        tg.MainButton.hide();
 
-        // Получаем chat ID из параметров
-        const chatId = tg.initDataUnsafe.user?.id || "Недоступно";
+        // Получаем данные пользователя
+        const user = tg.initDataUnsafe.user;
+        const chatId = user?.id;
 
-        // Отображаем chat ID
-        document.getElementById('chatId').textContent = chatId;
+        // Функция для загрузки данных
+        async function loadData() {
+            try {
+                const response = await fetch(GOOGLE_SCRIPT_URL);
+                const allData = await response.json();
+                
+                // Ищем запись текущего пользователя
+                const userData = allData.find(row => row[0] == chatId);
+                
+                // Формируем HTML
+                let html = `
+                    <div class="status-card">
+                        <div class="status-item">
+                            <span>Текущий шаг:</span>
+                            <span class="badge">${userData?.[2] || 'Не начат'}</span>
+                        </div>
+                        <div class="status-item">
+                            <span>Следующий шаг:</span>
+                            <span class="badge">${userData?.[3] || 'Шаг 1'}</span>
+                        </div>
+                        <div class="status-item">
+                            <span>Менеджер:</span>
+                            <span>${userData?.[4] || 'Не назначен'}</span>
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('status').innerHTML = html;
+            } catch (error) {
+                console.error('Ошибка:', error);
+                document.getElementById('status').innerHTML = '<p>Ошибка загрузки данных</p>';
+            }
+        }
 
-        // Отправляем данные в Google Таблицу
-        const googleScriptUrl = 'https://script.google.com/macros/s/AKfycbzeC5R3WmU0clDybZCnxkcs_wPCub-gf4UMRKzrKsj2KPw_U4FafMgBYGhIzzu-yjoIAQ/exec'; // Замените на ваш URL
-        fetch(googleScriptUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ chatId: chatId })
-        })
-        .then(response => response.text()) // Читаем ответ как текст
-        .then(result => {
-            console.log('Ответ от Google Apps Script:', result);
-        })
-        .catch(error => console.error('Ошибка:', error));
+        // Функция обновления данных
+        function refreshData() {
+            document.getElementById('status').innerHTML = '<p>Загрузка...</p>';
+            loadData();
+        }
+
+        // Первоначальная загрузка данных
+        loadData();
     </script>
 </body>
 </html>

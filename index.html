@@ -4,99 +4,80 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Telegram Mini App</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            max-width: 400px;
+            margin: 20px;
+        }
+        .container {
+            width: 300px;
             margin: auto;
-            background-color: #f4f4f4;
             padding: 20px;
+            border: 1px solid #ccc;
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.2);
         }
         button {
+            display: block;
             width: 100%;
             padding: 10px;
-            margin: 5px 0;
-            font-size: 18px;
-            background-color: #0088cc;
+            margin: 10px 0;
+            background-color: #007bff;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
         }
-        button:hover {
-            background-color: #0077b3;
-        }
     </style>
 </head>
 <body>
+    <div class="container">
+        <h2>Ваш статус</h2>
+        <p><b>Статус:</b> <span id="status">Загрузка...</span></p>
+        <p><b>Следующий шаг:</b> <span id="next_step">Загрузка...</span></p>
+        <p><b>Менеджер:</b> <span id="manager">Загрузка...</span></p>
 
-<h2>Ваши данные</h2>
-<p><strong>Никнейм:</strong> <span id="username">Загрузка...</span></p>
-<p><strong>Статус:</strong> <span id="status">Загрузка...</span></p>
-<p><strong>Следующий шаг:</strong> <span id="next_step">Загрузка...</span></p>
-<p><strong>Ваш менеджер:</strong> <span id="manager">Загрузка...</span></p>
+        <button onclick="downloadFile()">Скачать файл</button>
+        <button onclick="goToBot()">Перейти в бот</button>
+        <button onclick="rateManager()">Оценить менеджера</button>
+    </div>
 
-<button onclick="downloadFile()">Скачать файл</button>
-<button onclick="openBot()">Перейти в бот</button>
-<button onclick="rateManager()">Оставить отзыв</button>
+    <script>
+        function getUserData() {
+            Telegram.WebApp.expand();
+            const initData = Telegram.WebApp.initDataUnsafe;
+            if (!initData || !initData.user) return;
 
-<script>
-    let tg = window.Telegram.WebApp;
-    tg.expand();  // Фиксированный размер окна
-
-    async function registerUser() {
-        let response = await fetch("/register_user/", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                chat_id: tg.initDataUnsafe.user.id,
-                username: tg.initDataUnsafe.user.username
+            fetch('/get_user_data', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: initData.user.id,
+                    username: initData.user.username
+                })
             })
-        });
-        let data = await response.json();
-        console.log(data.message);
-    }
-
-    async function fetchUserData() {
-        let response = await fetch("/get_user_data/", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                chat_id: tg.initDataUnsafe.user.id,
-                username: tg.initDataUnsafe.user.username
-            })
-        });
-        let data = await response.json();
-
-        if (data.error) {
-            alert("Ошибка: " + data.error);
-        } else {
-            document.getElementById("username").innerText = data.username;
-            document.getElementById("status").innerText = data.status;
-            document.getElementById("next_step").innerText = data.next_step;
-            document.getElementById("manager").innerText = data.manager;
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("status").textContent = data.status;
+                document.getElementById("next_step").textContent = data.next_step;
+                document.getElementById("manager").textContent = data.manager;
+            });
         }
-    }
 
-    function downloadFile() {
-        window.location.href = "/static/sample.pdf";
-    }
+        function downloadFile() {
+            window.location.href = "/download";
+        }
 
-    function openBot() {
-        window.location.href = "https://t.me/YourBot";
-    }
+        function goToBot() {
+            window.location.href = "https://t.me/YOUR_BOT_USERNAME";
+        }
 
-    function rateManager() {
-        window.location.href = "https://2gis.ru/";
-    }
+        function rateManager() {
+            window.location.href = "https://2gis.ru/";
+        }
 
-    // Регистрируем пользователя и загружаем данные
-    registerUser().then(fetchUserData);
-</script>
-
+        getUserData();
+    </script>
 </body>
 </html>

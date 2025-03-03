@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     tg.expand();
     const chat_id = tg.initDataUnsafe?.user?.id || "Не определено";
 
-    chatIdElement.textContent = chat_id;  // Выводим chat_id
+    chatIdElement.textContent = chat_id; // Выводим chat_id
 
     try {
         let response = await fetch(`http://127.0.0.1:5000/user?chat_id=${chat_id}`);

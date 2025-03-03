@@ -1,142 +1,21 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-    <title>Прогресс</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личный кабинет</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        body {
-            margin: 0;
-            padding: 20px;
-            height: 100vh;
-            background: #f5f7fa;
-            font-family: Arial, sans-serif;
-        }
-        .container {
-            max-width: 400px;
-            margin: 0 auto;
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
-        }
-        .status-item {
-            margin: 15px 0;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 10px;
-            display: flex;
-            justify-content: space-between;
-        }
-        .loading {
-            text-align: center;
-            color: #3498db;
-            font-size: 18px;
-        }
-        button {
-            width: 100%;
-            padding: 14px;
-            background: #3498db;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-top: 20px;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <h2 style="text-align: center; color: #2c3e50;">Ваш прогресс</h2>
-        <div id="status">
-            <div class="loading">Загрузка данных...</div>
-        </div>
-        <button onclick="loadData(true)">🔄 Обновить</button>
+        <h1>Личный кабинет</h1>
+        <p><strong>Никнейм:</strong> <span id="username">Загрузка...</span></p>
+        <p><strong>Chat ID:</strong> <span id="chat_id">Загрузка...</span></p>
+        <h2>Данные из Google Таблицы:</h2>
+        <div id="user_data">Загрузка...</div>
     </div>
-
-    <script>
-        // ================== НАСТРОЙКИ ==================
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzeC5R3WmU0clDybZCnxkcs_wPCub-gf4UMRKzrKsj2KPw_U4FafMgBYGhIzzu-yjoIAQ/exec'; // Заменить!
-        // ================================================
-
-        let userData = null;
-        const tg = window.Telegram.WebApp;
-        
-        // Инициализация
-        tg.expand();
-        tg.ready();
-
-        // Автоматическая запись данных
-        const initUser = async () => {
-            try {
-                const user = tg.initDataUnsafe.user;
-                if (!user) throw new Error("User not found");
-                
-                // Отправка данных в Google Sheets
-                await fetch(GOOGLE_SCRIPT_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        chatId: String(user.id), // Обязательно в строку!
-                        username: user.username || 'Без имени'
-                    })
-                });
-                
-            } catch (error) {
-                console.error('Ошибка инициализации:', error);
-            }
-        };
-
-        // Загрузка данных
-        const loadData = async (force = false) => {
-            try {
-                document.getElementById('status').innerHTML = '<div class="loading">Загрузка данных...</div>';
-                
-                // Добавляем параметр против кэширования
-                const response = await fetch(`${GOOGLE_SCRIPT_URL}?t=${Date.now()}`);
-                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                
-                const allData = await response.json();
-                
-                // Проверка на ошибку от Google Script
-                if (allData.error) throw new Error(allData.error);
-                
-                const user = tg.initDataUnsafe.user;
-                userData = allData.find(row => String(row[0]) === String(user.id));
-                
-                if (userData) {
-                    document.getElementById('status').innerHTML = `
-                        <div class="status-item">
-                            <span>Chat ID:</span>
-                            <strong>${userData[0]}</strong>
-                        </div>
-                        <div class="status-item">
-                            <span>Текущий шаг:</span>
-                            <strong style="color: #27ae60;">${userData[2]}</strong>
-                        </div>
-                        <div class="status-item">
-                            <span>Менеджер:</span>
-                            <strong>${userData[4]}</strong>
-                        </div>
-                    `;
-                } else {
-                    document.getElementById('status').innerHTML = '<div style="color: #e74c3c;">Данные не найдены</div>';
-                }
-                
-            } catch (error) {
-                console.error('Ошибка загрузки:', error);
-                document.getElementById('status').innerHTML = `
-                    <div style="color: #e74c3c;">
-                        Ошибка: ${error.message}
-                    </div>
-                `;
-            }
-        };
-
-        // Запуск
-        (async () => {
-            await initUser();
-            await loadData();
-        })();
-    </script>
+    
+    <script src="script.js"></script>
 </body>
 </html>

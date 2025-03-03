@@ -3,23 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Кабинет клиента</title>
+    <title>Личный кабинет</title>
+    <link rel="stylesheet" href="styles.css">
     <script defer src="script.js"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-    <h1>Данные клиентов</h1>
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Чат ID</th>
-                <th>Статус клиента</th>
-                <th>Следующий шаг</th>
-                <th>Менеджер</th>
-            </tr>
-        </thead>
-        <tbody id="userTable">
-            <!-- Данные будут загружены сюда -->
-        </tbody>
-    </table>
+    <div class="container">
+        <h1>Личный кабинет</h1>
+        <div id="userInfo">
+            <p><strong>Чат ID:</strong> <span id="chatId"></span></p>
+            <p><strong>Статус клиента:</strong> <span id="status"></span></p>
+            <p><strong>Следующий шаг:</strong> <span id="nextStep"></span></p>
+            <p><strong>Менеджер:</strong> <span id="manager"></span></p>
+        </div>
+    </div>
 </body>
 </html>

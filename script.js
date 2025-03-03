@@ -11,8 +11,11 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     chatIdElement.textContent = chat_id; // Выводим chat_id
 
+    // URL Google Apps Script
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbwLvTIqxHng2nYtgINGx6pVjJhtEfOgy_glJunMnSyacT_d4HUpiadhrlcjSgg1wwwHmA/exec";
+
     try {
-        let response = await fetch(`http://127.0.0.1:5000/user?chat_id=${chat_id}`);
+        let response = await fetch(`${GAS_URL}?chat_id=${chat_id}`);
         let userData = await response.json();
 
         if (userData.error) {

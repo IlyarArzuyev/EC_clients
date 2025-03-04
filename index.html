@@ -1,38 +1,23 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Личный кабинет</title>
-    <script src="https://telegram.org/js/telegram-widget.js?22" 
-            data-telegram-login="@EClid_bot" 
-            data-size="large" 
-            data-onauth="onTelegramAuth(user)">
-    </script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <div id="user-data"></div>
-
-    <script>
-        function onTelegramAuth(user) {
-            fetch('/auth', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({
-                    chat_id: user.id,
-                    username: user.username
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                const html = `
-                    <h1>Добро пожаловать, ${user.username}!</h1>
-                    <p>Chat ID: ${user.id}</p>
-                    <p>Статус: ${data['Статус клиента']}</p>
-                    <p>Следующий шаг: ${data['Следующий шаг']}</p>
-                    <p>Менеджер: ${data['Менеджер']}</p>
-                `;
-                document.getElementById('user-data').innerHTML = html;
-            });
-        }
-    </script>
+    <div class="container">
+        <h1>Личный кабинет</h1>
+        {% if user_data %}
+            <p><strong>Никнейм:</strong> {{ user_data['никнейм'] }}</p>
+            <p><strong>Chat ID:</strong> {{ chat_id }}</p>
+            <p><strong>Статус:</strong> {{ user_data['статус'] }}</p>
+            <p><strong>Следующий шаг:</strong> {{ user_data['следующий шаг'] }}</p>
+            <p><strong>Менеджер:</strong> {{ user_data['менеджер'] }}</p>
+        {% else %}
+            <p>Пользователь не найден.</p>
+        {% endif %}
+    </div>
 </body>
 </html>

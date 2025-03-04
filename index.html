@@ -1,20 +1,38 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Личный кабинет</title>
-    <link rel="stylesheet" href="styles.css">
-    <script defer src="script.js"></script>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://telegram.org/js/telegram-widget.js?22" 
+            data-telegram-login="@EClid_bot" 
+            data-size="large" 
+            data-onauth="onTelegramAuth(user)">
+    </script>
 </head>
 <body>
-    <div class="container">
-        <h1>Личный кабинет</h1>
-        <p><strong>Чат ID:</strong> <span id="chatId">Загрузка...</span></p>
-        <p><strong>Статус клиента:</strong> <span id="status">Загрузка...</span></p>
-        <p><strong>Следующий шаг:</strong> <span id="nextStep">Загрузка...</span></p>
-        <p><strong>Менеджер:</strong> <span id="manager">Загрузка...</span></p>
-    </div>
+    <div id="user-data"></div>
+
+    <script>
+        function onTelegramAuth(user) {
+            fetch('/auth', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    chat_id: user.id,
+                    username: user.username
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const html = `
+                    <h1>Добро пожаловать, ${user.username}!</h1>
+                    <p>Chat ID: ${user.id}</p>
+                    <p>Статус: ${data['Статус клиента']}</p>
+                    <p>Следующий шаг: ${data['Следующий шаг']}</p>
+                    <p>Менеджер: ${data['Менеджер']}</p>
+                `;
+                document.getElementById('user-data').innerHTML = html;
+            });
+        }
+    </script>
 </body>
 </html>

@@ -2,22 +2,104 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Личный кабинет</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Expert Credit</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 400px;
+            margin: auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #007bff;
+        }
+        p {
+            font-size: 18px;
+            color: #333;
+        }
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            text-decoration: none;
+            background: #007bff;
+            color: white;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .btn:hover {
+            background: #0056b3;
+        }
+        .image-links {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+        .image-links a {
+            width: 30%;
+        }
+        .image-links img {
+            width: 100%;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        .address {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e9ecef;
+            border-radius: 10px;
+            font-size: 14px;
+            color: #555;
+            line-height: 1.6;
+        }
+        .address a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .address a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <h1>Личный кабинет</h1>
-        {% if user_data %}
-            <p><strong>Никнейм:</strong> {{ user_data['никнейм'] }}</p>
-            <p><strong>Chat ID:</strong> {{ chat_id }}</p>
-            <p><strong>Статус:</strong> {{ user_data['статус'] }}</p>
-            <p><strong>Следующий шаг:</strong> {{ user_data['следующий шаг'] }}</p>
-            <p><strong>Менеджер:</strong> {{ user_data['менеджер'] }}</p>
-        {% else %}
-            <p>Пользователь не найден.</p>
-        {% endif %}
+        <h1>Expert Credit</h1>
+        <p>Приветствую дорогой клиент</p>
+        <p>Тут есть все, что будет необходимо тебе:</p>
+        
+        <a href="file.pdf" class="btn" download>Скачать</a>
+        <a href="https://example.com/review" class="btn">Отзыв</a>
+        <a href="https://example.com/payment" class="btn">Оплата</a>
+        <a href="https://t.me/expert_credit_bot" class="btn">Написать боту</a>
+        
+        <div class="image-links">
+            <a href="https://example.com/link1"><img src="image1.jpg" alt="Image 1"></a>
+            <a href="https://example.com/link2"><img src="image2.jpg" alt="Image 2"></a>
+            <a href="https://example.com/link3"><img src="image3.jpg" alt="Image 3"></a>
+        </div>
+        
+        <div class="address">
+            <p><strong>Город Алматы</strong></p>
+            <p>Улица Мынбаева, 53<br>
+            БЦ Avenue Group<br>
+            2 этаж, домофон 201<br>
+            Кабинет 201</p>
+            <p><a href="https://2gis.kz/almaty/geo/9430047375024031/76.902397,43.237659" target="_blank">Открыть в 2ГИС</a></p>
+        </div>
     </div>
 </body>
 </html>

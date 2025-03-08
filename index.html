@@ -90,16 +90,6 @@
             font-size: 16px;
         }
     </style>
-    <script>
-        function downloadFile() {
-            var link = document.createElement('a');
-            link.href = 'guide.pdf';
-            link.download = 'guide.pdf';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-    </script>
 </head>
 <body>
     <div class="container">
@@ -107,16 +97,17 @@
         <p class="animated-text">Приветствую дорогой клиент</p>
         <p class="animated-text">Тут есть все, что будет необходимо тебе:</p>
         
-        <button onclick="downloadFile()" class="btn">Скачать</button>
-        <button onclick="window.location.href='https://example.com/review'" class="btn">Отзыв</button>
-        <button onclick="window.location.href='https://example.com/payment'" class="btn">Оплата</button>
-        <button onclick="window.location.href='https://t.me/expert_credit_bot'" class="btn">Написать боту</button>
+        <a href="https://example.com/review" class="btn">Гайд 💣</a>
+        <a href="https://2gis.kz/almaty/inside/9430047375024031/firm/70000001065238061/tab/reviews?m=76.902419%2C43.237714%2F16" target="_blank" class="btn">Отзыв 🗺️</a>
+        <a href="https://pay.kaspi.kz/pay/klcx3wrc" target="_blank" class="btn">Оплата 💳</a>
+        <a href="https://t.me/managers_assessmentBOT" class="btn">Оценка эксперта</a>
         
-        <div class="image-links">
-            <a href="https://www.youtube.com" target="_blank"><i class="fa-brands fa-youtube"></i></a>
-            <a href="https://www.instagram.com" target="_blank"><i class="fa-brands fa-instagram"></i></a>
-            <a href="https://wa.me/" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
+          <div class="image-links">
+            <a href="https://www.youtube.com/@kanat_expert" target="_blank"><i class="fa-brands fa-youtube"></i></a>
+            <a href="https://www.instagram.com/kanat_expert/" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+            <a href="https://wa.me/77753181260" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
         </div>
+
         
         <div class="address">
             <p class="animated-text"><strong>Город Алматы</strong></p>

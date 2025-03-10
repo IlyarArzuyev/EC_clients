@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+    <title>Личный кабинет</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: white;
+            margin: 0;
+            padding: 80px 20px 100px;
+            overflow: hidden;
+        }
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 20px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 20px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .header-center {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .container {
+            background: transparent;
+            max-width: 400px;
+            margin: auto;
+            display: none;
+        }
+        .scrollable-content {
+            height: calc(100vh - 180px);
+            overflow-y: auto;
+            padding: 20px 0;
+        }
+        .buttons-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .button-item {
+            padding: 10px;
+            cursor: pointer;
+            background-color: transparent;
+            border-radius: 10px;
+        }
+        .button-item img {
+            width: 50px;
+            height: 50px;
+        }
+        .button-label {
+            margin-top: 5px;
+            font-size: 12px;
+            color: black;
+        }
+        .button-item a {
+            text-decoration: none;
+            color: inherit;
+        }
+        .large-button {
+            background-color: green;
+            color: white;
+            padding: 13px;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 0px;
+            max-width: 400px;
+            text-decoration: none;
+            display: block;
+        }
+		 .large-button a {
+            align: center;
+		 }
+        .pagination-container {
+            position: fixed;
+            bottom: 90;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: -5px;
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            margin-top: -20px;
+			
+        }
+        .pagination-button {
+            width: 50px;
+            height: 50px;
+            background-color: transparent;
+            border: none;
+            border-radius: 2px;
+            margin: 10px;
+            cursor: pointer;
+        }
+        .pagination-button img {
+            max-width: 30px;
+            max-height: 30px;
+            border-radius: 8px;
+        }
+        img[alt="Баннер"] {
+            border-radius: 10px;
+            width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- Фиксированный хедер -->
+    <div class="header" id="main-header">
+        <div class="header-center" id="user-header">Загрузка...</div>
+        <span id="header-title">Expert Credit</span>
+    </div>
+
+    <!-- Страница 1 -->
+    <div class="container" id="page-1">
+        <div class="scrollable-content">
+            <img src="ex.png.PNG" width="735" height="400" alt="Баннер">
+            <div class="buttons-grid">
+		            <div class="button-item"><a href="Guide.html"><img src="guide.png" alt="Кнопка 1"><span class="button-label">Гайд</span></div></a>
+		            <div class="button-item"><a href="https://2gis.kz/almaty/inside/9430047375024031/firm/70000001065238061/tab/reviews?m=76.902419%2C43.237714%2F16"><img src="say.png" alt="Кнопка 2"><span class="button-label">Отзыв</span></div></a>
+		            <div class="button-item"><a href="https://t.me/managers_assessmentBOT"><img src="man.png" alt="Кнопка 3"><span class="button-label">Оценка эксперта</span></div></a>
+		            <div class="button-item"><a href="https://pay.kaspi.kz/pay/klcx3wrc" target="_blank"><img src="pay.png" alt="Кнопка 4"><span class="button-label">Оплата</span></div></a>
+		            <div class="button-item"><a href="https://www.instagram.com/kanat_expert/" target="_blank"><img src="insta.png" alt="Кнопка 5"><span class="button-label">Instagram</span></div></a>
+		            <div class="button-item"><a href="https://www.youtube.com/@kanat_expert" target="_blank"><img src="you.png" alt="Кнопка 6"><span class="button-label">YouTube</span></div></a>
+		            <div class="button-item"><a href="https://wa.me/77753181260" target="_blank"><img src="whats.png" alt="Кнопка 7"><span class="button-label">What's app</span></div></a>
+		            <div class="button-item"><a href="#"><img src="face.png" alt="Кнопка 7"><span class="button-label">FaceBook</span></div></a>
+		        </div>
+			
+            <div style="margin-top: 20px;">
+                <img src="Текст абзаца.png" width="735" height="400" alt="Баннер">
+            </div>
+            <a class="large-button" align="center" href="https://2gis.kz/almaty/firm/70000001065238061?m=76.902439%2C43.23761%2F16">Открыть в 2GIS</a>
+        </div>
+    </div>
+
+    <!-- Страница 2 -->
+    <div class="container" id="page-2">
+        <div class="scrollable-content">
+            <img src="ban1.png" width="735" height="400" alt="Баннер">
+           <div style="margin-top: 20px;">
+	           <div><img src="baner2.jpeg" width="735" height="400" alt="Баннер"></div>
+	         
+           
+            <div style="margin-top: 20px;">
+                <img src="ban3.jpeg" width="735" height="400" alt="Баннер">
+            </div>
+            <a class="large-button" align="center" href="https://example.com">Перейти на сайт</a>
+        </div>
+    </div>
+ </div>
+    <!-- Фиксированный пагинатор -->
+    <div class="pagination-container">
+        <button class="pagination-button" id="prev-page"><img src="ic12.png" alt="Предыдущая"></button>
+        <button class="pagination-button" id="next-page"><img src="ic2.png" alt="Следующая"></button>
+    </div>
+
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Инициализация Telegram
+            let currentPage = 1;
+            const pages = {
+                1: {title: 'Expert Credit', element: document.getElementById('page-1')},
+                2: {title: 'Expert Credit', element: document.getElementById('page-2')}
+            };
+
+            if (window.Telegram?.WebApp) {
+                const tg = window.Telegram.WebApp;
+                tg.expand();
+                
+                const user = tg.initDataUnsafe?.user;
+                if (user) {
+                    const userHeader = document.getElementById("user-header");
+                    userHeader.innerHTML = `
+                        <img class="avatar" src="${user.photo_url || 'https://via.placeholder.com/40'}" alt="Аватар">
+                        <span>${user.username || user.first_name || 'Пользователь'}</span>
+                    `;
+                }
+            }
+
+            // Переключение страниц
+            function showPage(pageNumber) {
+                Object.values(pages).forEach(page => {
+                    page.element.style.display = 'none';
+                });
+                pages[pageNumber].element.style.display = 'block';
+                document.getElementById('header-title').textContent = pages[pageNumber].title;
+                currentPage = pageNumber;
+            }
+
+            document.getElementById('prev-page').addEventListener('click', () => {
+                if(currentPage > 1) showPage(currentPage - 1);
+            });
+
+            document.getElementById('next-page').addEventListener('click', () => {
+                if(currentPage < Object.keys(pages).length) showPage(currentPage + 1);
+            });
+
+            // Показать первую страницу при загрузке
+            showPage(1);
+        });
+    </script>
+</body>
+</html>

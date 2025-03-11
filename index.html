@@ -18,7 +18,7 @@
             left: 0;
             right: 0;
             background: white;
-            padding: 20px;
+            padding: 10px;
             z-index: 1000;
             display: flex;
             align-items: center;
@@ -60,6 +60,14 @@
             cursor: pointer;
             background-color: transparent;
             border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.1s, background-color 0.1s;
+        }
+        .button-item:active {
+            transform: scale(0.95);
+            background-color: rgba(0,0,0,0.05);
         }
         .button-item img {
             width: 50px;
@@ -69,10 +77,16 @@
             margin-top: 5px;
             font-size: 12px;
             color: black;
+            text-align: center;
+            width: 100%;
         }
         .button-item a {
             text-decoration: none;
             color: inherit;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
         }
         .large-button {
             background-color: green;
@@ -85,10 +99,12 @@
             max-width: 400px;
             text-decoration: none;
             display: block;
+            text-align: center;
+            transition: transform 0.1s;
         }
-		 .large-button a {
-            align: center;
-		 }
+        .large-button:active {
+            transform: scale(0.98);
+        }
         .pagination-container {
             position: fixed;
             bottom: 90;
@@ -101,7 +117,6 @@
             display: flex;
             justify-content: center;
             margin-top: -20px;
-			
         }
         .pagination-button {
             width: 50px;
@@ -111,6 +126,10 @@
             border-radius: 2px;
             margin: 10px;
             cursor: pointer;
+            transition: transform 0.1s;
+        }
+        .pagination-button:active {
+            transform: scale(0.9);
         }
         .pagination-button img {
             max-width: 30px;
@@ -136,20 +155,20 @@
         <div class="scrollable-content">
             <img src="ex.png.PNG" width="735" height="400" alt="Баннер">
             <div class="buttons-grid">
-		            <div class="button-item"><a href="Guide.html"><img src="guide.png" alt="Кнопка 1"><span class="button-label">Гайд</span></div></a>
-		            <div class="button-item"><a href="https://2gis.kz/almaty/inside/9430047375024031/firm/70000001065238061/tab/reviews?m=76.902419%2C43.237714%2F16"><img src="say.png" alt="Кнопка 2"><span class="button-label">Отзыв</span></div></a>
-		            <div class="button-item"><a href="https://t.me/managers_assessmentBOT"><img src="man.png" alt="Кнопка 3"><span class="button-label">Оценка эксперта</span></div></a>
-		            <div class="button-item"><a href="https://pay.kaspi.kz/pay/klcx3wrc" target="_blank"><img src="pay.png" alt="Кнопка 4"><span class="button-label">Оплата</span></div></a>
-		            <div class="button-item"><a href="https://www.instagram.com/kanat_expert/" target="_blank"><img src="insta.png" alt="Кнопка 5"><span class="button-label">Instagram</span></div></a>
-		            <div class="button-item"><a href="https://www.youtube.com/@kanat_expert" target="_blank"><img src="you.png" alt="Кнопка 6"><span class="button-label">YouTube</span></div></a>
-		            <div class="button-item"><a href="https://wa.me/77753181260" target="_blank"><img src="whats.png" alt="Кнопка 7"><span class="button-label">What's app</span></div></a>
-		            <div class="button-item"><a href="#"><img src="face.png" alt="Кнопка 7"><span class="button-label">FaceBook</span></div></a>
-		        </div>
-			
+                <div class="button-item"><a href="Guide.html"><img src="guide.png" alt="Кнопка 1"><span class="button-label">Гайд</span></a></div>
+                <div class="button-item"><a href="https://2gis.kz/almaty/inside/9430047375024031/firm/70000001065238061/tab/reviews?m=76.902419%2C43.237714%2F16"><img src="say.png" alt="Кнопка 2"><span class="button-label">Отзыв</span></a></div>
+                <div class="button-item"><a href="https://t.me/managers_assessmentBOT"><img src="man.png" alt="Кнопка 3"><span class="button-label">Оценка эксперта</span></a></div>
+                <div class="button-item"><a href="https://pay.kaspi.kz/pay/klcx3wrc" target="_blank"><img src="pay.png" alt="Кнопка 4"><span class="button-label">Оплата</span></a></div>
+                <div class="button-item"><a href="https://www.instagram.com/kanat_expert/" target="_blank"><img src="insta.png" alt="Кнопка 5"><span class="button-label">Instagram</span></a></div>
+                <div class="button-item"><a href="https://www.youtube.com/@kanat_expert" target="_blank"><img src="you.png" alt="Кнопка 6"><span class="button-label">YouTube</span></a></div>
+                <div class="button-item"><a href="https://wa.me/77753181260" target="_blank"><img src="whats.png" alt="Кнопка 7"><span class="button-label">What's app</span></a></div>
+                <div class="button-item"><a href="#"><img src="face.png" alt="Кнопка 8"><span class="button-label">FaceBook</span></a></div>
+            </div>
+            
             <div style="margin-top: 20px;">
                 <img src="Текст абзаца.png" width="735" height="400" alt="Баннер">
             </div>
-            <a class="large-button" align="center" href="https://2gis.kz/almaty/firm/70000001065238061?m=76.902439%2C43.23761%2F16">Открыть в 2GIS</a>
+            <a class="large-button" href="https://2gis.kz/almaty/firm/70000001065238061?m=76.902439%2C43.23761%2F16">Открыть в 2GIS</a>
         </div>
     </div>
 
@@ -157,17 +176,16 @@
     <div class="container" id="page-2">
         <div class="scrollable-content">
             <img src="ban1.png" width="735" height="400" alt="Баннер">
-           <div style="margin-top: 20px;">
-	           <div><img src="baner2.jpeg" width="735" height="400" alt="Баннер"></div>
-	         
-           
             <div style="margin-top: 20px;">
-                <img src="ban3.jpeg" width="735" height="400" alt="Баннер">
+                <div><img src="baner2.jpeg" width="735" height="400" alt="Баннер"></div>
+                <div style="margin-top: 20px;">
+                    <img src="ban3.jpeg" width="735" height="400" alt="Баннер">
+                </div>
+                <a class="large-button" href="openAI.html">Виртуальный ассистент</a>
             </div>
-            <a class="large-button" align="center" href="openAI.html">Виртуальный ассистент</a>
         </div>
     </div>
- </div>
+
     <!-- Фиксированный пагинатор -->
     <div class="pagination-container">
         <button class="pagination-button" id="prev-page"><img src="ic12.png" alt="Предыдущая"></button>
@@ -177,7 +195,6 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // Инициализация Telegram
             let currentPage = 1;
             const pages = {
                 1: {title: 'Expert Credit', element: document.getElementById('page-1')},
@@ -198,7 +215,6 @@
                 }
             }
 
-            // Переключение страниц
             function showPage(pageNumber) {
                 Object.values(pages).forEach(page => {
                     page.element.style.display = 'none';
@@ -216,7 +232,6 @@
                 if(currentPage < Object.keys(pages).length) showPage(currentPage + 1);
             });
 
-            // Показать первую страницу при загрузке
             showPage(1);
         });
     </script>

@@ -31,7 +31,11 @@ html, body {
             font-family: 'Segoe UI', system-ui;
             background: linear-gradient(45deg, #f3e8ff, #e9d5ff, #f0e7fe);
             min-height: 100vh;
-            position: relative;
+		    position: fixed;
+		    top: 0;
+		    left: 0;
+		    right: 0;
+		    bottom: 0;
             overflow: hidden;
         }
 
@@ -69,7 +73,11 @@ html, body {
             align-items: center;
             gap: 15px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            position: sticky;        }
+            position: sticky;      
+		    top: 0;
+		     z-index: 1000;
+		     flex-shrink: 0;
+		  }
 
         .back-btn {
             background: rgba(255,255,255,0.2);
@@ -118,6 +126,8 @@ html, body {
                     transparent 1px,
                     transparent 40px
                 );
+			    -webkit-overflow-scrolling: touch;
+				
         }
 
         .message {
@@ -167,7 +177,10 @@ html, body {
             border-top: 1px solid rgba(0,0,0,0.05);
             display: flex;
             gap: 15px;
-            position: relative;
+		    position: sticky;
+		    bottom: 0;
+		       max-width: 800px;
+		       margin: 0 auto;
         }
 
         #user-input {
@@ -238,12 +251,22 @@ html, body {
             40% { transform: translateY(-10px); }
         }
 
-        @media (max-width: 768px) {
-            #chat-container {
-                margin: 0;
-                border-radius: 0;
-                height: 100vh;
-            }
+		/* Добавлено */
+		@media (max-width: 600px) {
+		    #chat-box {
+		        padding: 60px 12px 12px;
+		    }
+    
+		    .message {
+		        max-width: 90%;
+		        padding: 10px 14px;
+		        font-size: 14px;
+		    }
+    
+		    #input-container {
+		        padding: 12px;
+		    }
+		}
             
             .message {
                 max-width: 85%;

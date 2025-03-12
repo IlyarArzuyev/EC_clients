@@ -2,108 +2,119 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Expert Credit AI</title>
     <style>
         :root {
             --primary: #6366f1;
-            --secondary: #a855f7;
+            --secondary: #8b5cf6;
             --accent: #ec4899;
-            --glass: rgba(255, 255, 255, 0.95);
+            --bg: #0f172a;
+            --glass: rgba(15, 23, 42, 0.98);
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
         }
-        
-html, body {
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(10px, 10px) rotate(5deg); }
+            75% { transform: translate(-10px, -5px) rotate(-3deg); }
+        }
+
+        @keyframes particle {
+            0% { transform: translateY(0) scale(1); opacity: 0; }
+            20% { opacity: 1; }
+            100% { transform: translateY(-100vh) scale(0.5); opacity: 0; }
+        }
+
+        html, body {
             width: 100%;
             height: 100%;
+            margin: 0;
             overflow: hidden;
             touch-action: pan-y;
             -webkit-overflow-scrolling: touch;
-}
-        
-        @keyfloat {
-            0% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
-            100% { transform: translateY(0); }
+            background: var(--bg);
         }
 
         body {
-            margin: 0;
             font-family: 'Segoe UI', system-ui;
-            background: linear-gradient(45deg, #f3e8ff, #e9d5ff, #f0e7fe);
-            min-height: 100vh;
-		    position: fixed;
-		    top: 0;
-		    left: 0;
-		    right: 0;
-		    bottom: 0;
-            overflow: hidden;
+            position: fixed;
         }
 
-        .bg-effects {
+        .particles {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            background: var(--gradient);
+            border-radius: 50%;
+            animation: particle 4s infinite linear;
+        }
+
+        .gradient-bg {
             position: fixed;
             width: 200vw;
             height: 200vh;
             background: 
-                radial-gradient(circle at 20% 10%, var(--primary) 0%, transparent 50%),
-                radial-gradient(circle at 80% 90%, var(--secondary) 0%, transparent 50%);
-            opacity: 0.1;
+                radial-gradient(circle at 20% 10%, var(--primary) 0%, transparent 60%),
+                radial-gradient(circle at 80% 90%, var(--secondary) 0%, transparent 60%);
+            opacity: 0.08;
             animation: float 20s infinite linear;
+            filter: blur(60px);
         }
 
         #chat-container {
             max-width: 800px;
-            margin: 20px auto;
-            height: calc(100vh - 40px);
+            margin: 0 auto;
+            height: 100vh;
             background: var(--glass);
-            border-radius: 30px;
-            backdrop-filter: blur(20px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(30px) saturate(180%);
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.3),
+                        inset 0 0 12px rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            position: relative;
         }
 
         .header {
-            padding: 6px 15px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            padding: 5px 25px;
+            background: rgba(15, 23, 42, 0.8);
             color: white;
             display: flex;
             align-items: center;
             gap: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            position: sticky;      
-		    top: 0;
-		     z-index: 1000;
-		     flex-shrink: 0;
-		  }
+            position: relative;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
 
         .back-btn {
-            background: rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.1);
             border: none;
-            padding: 4px;
+            padding: 8px 12px 8px 8px;
             border-radius: 15px;
             cursor: pointer;
             transition: all 0.3s;
             display: flex;
-            align-items: right;
+            align-items: center;
             gap: 6px;
-            color: white;
+            color: rgba(255,255,255,0.8);
             font-weight: 500;
-			 text-decoration: none !important;
+            z-index: 1;
         }
 
         .back-btn:hover {
-            background: rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.2);
             transform: translateX(-3px);
         }
 
         .back-btn svg {
-            width: 27px;
+            width: 24px;
             height: 24px;
-            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));
-			
         }
 
         .logo {
@@ -111,7 +122,8 @@ html, body {
             font-size: 1.4em;
             font-weight: 700;
             letter-spacing: -0.5px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+			
         }
 
         #chat-box {
@@ -121,108 +133,113 @@ html, body {
             display: flex;
             flex-direction: column;
             gap: 20px;
-            background: 
+            background-image: 
+                linear-gradient(rgba(15, 23, 42, 0.6) 0%, rgba(15, 23, 42, 0) 100%),
                 repeating-linear-gradient(
-                    rgba(255,255,255,0.05),
-                    rgba(255,255,255,0.05) 1px,
-                    transparent 1px,
+                    45deg,
+                    rgba(99, 102, 241, 0.05) 0px,
+                    rgba(99, 102, 241, 0.05) 20px,
+                    transparent 20px,
+                    transparent 40px
+                ),
+                repeating-linear-gradient(
+                    -45deg,
+                    rgba(139, 92, 246, 0.05) 0px,
+                    rgba(139, 92, 246, 0.05) 20px,
+                    transparent 20px,
                     transparent 40px
                 );
-			    -webkit-overflow-scrolling: touch;
-				
+            position: relative;
+        }
+
+        .brand-logo {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.05;
+            z-index: 0;
+            width: 200px;
+            height: 200px;
+            background: url('data:image/svg+xml,<svg viewBox="0 0 24 24" fill="white" xmlns="https://pixabay.com/ru/photos/png-ствол-лена-дерево-2653383/"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.18 5 4.05 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>');
+            background-size: contain;
+            pointer-events: none;
         }
 
         .message {
             max-width: 75%;
             padding: 18px 25px;
-            border-radius: 25px;
+            border-radius: 15px;
             line-height: 1.5;
             position: relative;
-            animation: messageIn 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
-            transition: transform 0.3s;
-        }
-
-        .message:hover {
-            transform: translateY(-2px);
+            animation: messageIn 0.6s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+            transition: 0.3s all;
+            cursor: pointer;
+            z-index: 1;
         }
 
         .user-message {
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            background: var(--gradient);
             color: white;
             align-self: flex-end;
-            border-radius: 25px 25px 5px 25px;
-            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
+            border-radius: 15px 15px 3px 15px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
         }
 
         .bot-message {
-            background: white;
-            color: #333;
+            background: rgba(30, 41, 59, 0.9);
+            color: rgba(255,255,255,0.9);
             align-self: flex-start;
-            border-radius: 25px 25px 25px 5px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
         }
 
         .bot-message::before {
-            content: '';
+            content: '🤖';
             position: absolute;
-            left: -10px;
-            top: 15px;
-            width: 20px;
-            height: 20px;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23ffffff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>');
+            left: -40px;
+            top: 0;
+            font-size: 24px;
             filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));
         }
 
         #input-container {
-            padding: 20px;
-            background: rgba(255,255,255,0.9);
-            border-top: 1px solid rgba(0,0,0,0.05);
+            padding: 7px;
+            background: rgba(15, 23, 42, 0.8);
+            border-top: 1px solid rgba(255,255,255,0.1);
             display: flex;
             gap: 15px;
-		    position: sticky;
-		    bottom: 0;
-		       max-width: 800px;
-		       margin: 0 auto;
+            backdrop-filter: blur(10px);
         }
 
         #user-input {
             flex: 1;
             padding: 18px 25px;
             border: none;
-            border-radius: 20px;
-            background: rgba(255,255,255,0.8);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border-radius: 15px;
+            background: rgba(30, 41, 59, 0.8);
+            color: white;
             font-size: 16px;
             transition: all 0.3s;
         }
 
-        #user-input:focus {
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3);
+        #user-input::placeholder {
+            color: rgba(255,255,255,0.4);
         }
 
         #send-btn {
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            background: var(--gradient);
             border: none;
-            padding: 15px 25px;
+            padding: 15px 22px;
             border-radius: 15px;
             color: white;
             cursor: pointer;
             transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
         }
 
         #send-btn:hover {
             transform: scale(1.05);
-            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
-        }
-
-        #send-btn:active {
-            transform: scale(0.95);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
         }
 
         .typing-indicator {
@@ -230,69 +247,96 @@ html, body {
             padding: 15px;
             align-items: center;
             gap: 8px;
+            background: rgba(30, 41, 59, 0.9);
+            border-radius: 15px;
+            width: max-content;
+            margin-left: 40px;
+            backdrop-filter: blur(5px);
         }
 
         .dot {
-            width: 8px;
-            height: 8px;
+            width: 10px;
+            height: 10px;
             background: var(--primary);
             border-radius: 50%;
             animation: bounce 1.4s infinite ease-in-out;
         }
 
-        .dot:nth-child(2) { animation-delay: 0.2s; }
-        .dot:nth-child(3) { animation-delay: 0.4s; }
-
         @keyframes messageIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from { 
+                opacity: 0; 
+                transform: translateY(20px) scale(0.9);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0) scale(1);
+            }
         }
 
         @keyframes bounce {
             0%, 80%, 100% { transform: translateY(0); }
-            40% { transform: translateY(-10px); }
+            40% { transform: translateY(-15px); }
         }
 
-		/* Добавлено */
-		@media (max-width: 600px) {
-		    #chat-box {
-		        padding: 60px 12px 12px;
-		    }
-    
-		    .message {
-		        max-width: 90%;
-		        padding: 10px 14px;
-		        font-size: 14px;
-		    }
-    
-		    #input-container {
-		        padding: 12px;
-		    }
-		}
+        @media (max-width: 600px) {
+            #chat-container {
+                border-radius: 0;
+            }
             
             .message {
                 max-width: 85%;
+                font-size: 15px;
+            }
+            
+            .bot-message::before {
+                left: -32px;
+                font-size: 20px;
+            }
+            
+            .brand-logo {
+                width: 150px;
+                height: 150px;
             }
         }
-       
+
+        .timestamp {
+            font-size: 0.75em;
+            opacity: 0.7;
+            margin-top: 8px;
+            text-align: right;
+        }
+
+        .ripple {
+            position: absolute;
+            background: rgba(255,255,255,0.1);
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            border-radius: 50%;
+            animation: rippleEffect 0.6s linear;
+        }
+
+        @keyframes rippleEffect {
+            0% { width: 0; height: 0; opacity: 1; }
+            100% { width: 400px; height: 400px; opacity: 0; }
+        }
     </style>
 </head>
 <body>
-    <div class="bg-effects"></div>
+    <div class="gradient-bg"></div>
+    <div class="particles"></div>
     
     <div id="chat-container">
         <div class="header">
-<a class="back-btn" href="index.html">
-
-                <svg viewBox="0 0 29 24" fill="white">
+            <a class="back-btn" href="index.html">
+                <svg viewBox="0 0 24 24" fill="white">
                     <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
                 </svg>
-                
-            </button></a>
+            </a>
             <div class="logo" align="right">Expert Credit AI</div>
         </div>
 
         <div id="chat-box">
+            <div class="brand-logo"></div>
             <div class="typing-indicator">
                 <div class="dot"></div>
                 <div class="dot"></div>
@@ -315,8 +359,41 @@ html, body {
         const userInput = document.getElementById('user-input');
         const sendBtn = document.getElementById('send-btn');
         const typingIndicator = document.querySelector('.typing-indicator');
+        const particlesContainer = document.querySelector('.particles');
 
-  // Разделение ключа на части (Маскировка)
+        // Генерация частиц
+        function createParticles(x, y) {
+            for(let i = 0; i < 5; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                particle.style.width = particle.style.height = Math.random() * 6 + 4 + 'px';
+                particle.style.animationDuration = Math.random() * 3 + 2 + 's';
+                particlesContainer.appendChild(particle);
+                
+                setTimeout(() => particle.remove(), 5000);
+            }
+        }
+
+        // Ripple эффект
+        function createRipple(e) {
+            const ripple = document.createElement('div');
+            ripple.className = 'ripple';
+            ripple.style.left = e.clientX + 'px';
+            ripple.style.top = e.clientY + 'px';
+            document.body.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 600);
+        }
+
+        document.addEventListener('click', createRipple);
+        document.addEventListener('mousemove', (e) => {
+            if(Math.random() > 0.97) {
+                createParticles(e.clientX, e.clientY);
+            }
+        });
+
+        // Разделение ключа на части (Маскировка)
         const part1 = "sk-proj--epHKZsTAVdhTN_Y7VLXfvTGdHIYei";
         const part2 = "_C3x9MGy4Yt7nMqsaFKFAex7qVrIzCL9fn09zK5gER9";
         const part3 = "MT3BlbkFJ3gXzYqMRG5JDSI1SLoHADZVb240NTP3Q";
@@ -344,7 +421,7 @@ html, body {
                         model: 'gpt-3.5-turbo',
                         messages: [{
                             role: 'system',
-                            content: `Ты AI-ассистент Expert Credit. Отвечай креативно и эмоционально, используя современный стиль общения. Максимально 3 предложения. Поддерживай дружеский тон с элементами профессиональной консультации.`
+                            content: `Ты AI-ассистент Expert Credit. Отвечай креативно и эмоционально, используя современный стиль общения. Максимально 3 предложения. Поддерживай дружеский тон с элементами профессиональной консультации. Используй смайлики под контекст сообщения которое ты отправляешь. Смайлики должны быть в каждом сообщении`
                         }, {
                             role: 'user',
                             content: message
@@ -355,10 +432,9 @@ html, body {
                 const data = await response.json();
                 hideTyping();
                 addMessage('bot', data.choices[0].message.content);
-
             } catch (error) {
                 hideTyping();
-                addMessage('bot', '😔 Упс! Кажется, я сломался... Попробуйте спросить по-другому!');
+                addMessage('bot', '⚠️ Произошла ошибка. Пожалуйста, попробуйте задать вопрос иначе или повторите позже.');
             }
         }
 
@@ -369,8 +445,16 @@ html, body {
                 ${text}
                 <div class="timestamp">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
             `;
+            
+            msg.addEventListener('click', () => {
+                msg.classList.toggle('message-expanded');
+            });
+            
             chatBox.appendChild(msg);
-            chatBox.scrollTop = chatBox.scrollHeight;
+            chatBox.scrollTo({
+                top: chatBox.scrollHeight,
+                behavior: 'smooth'
+            });
         }
 
         function showTyping() {
@@ -384,14 +468,6 @@ html, body {
 
         sendBtn.addEventListener('click', sendMessage);
         userInput.addEventListener('keypress', e => e.key === 'Enter' && sendMessage());
-
-        // Параллакс эффект для фона
-        document.addEventListener('mousemove', (e) => {
-            const x = e.clientX / window.innerWidth;
-            const y = e.clientY / window.innerHeight;
-            document.querySelector('.bg-effects').style.transform = 
-                `translate(${x * -30}px, ${y * -30}px)`;
-        });
     </script>
 </body>
 </html>

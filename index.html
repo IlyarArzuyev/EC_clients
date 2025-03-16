@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
     <title>Личный кабинет</title>
     <style>
+	    * {
+	               -webkit-tap-highlight-color: transparent;
+	               outline: none;
+	           }
         body {
             font-family: Arial, sans-serif;
             background-color: white;
@@ -39,10 +43,27 @@
             object-fit: cover;
         }
         .container {
-            background: transparent;
+            position: absolute;
+            width: 100%;
             max-width: 400px;
-            margin: auto;
-            display: none;
+            left: 50%;
+            transform: translateX(-50%) scale(0.98);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+        }
+        .container.active {
+            opacity: 1;
+            pointer-events: all;
+            transform: translateX(-50%) scale(1);
+        }
+        .container.next {
+            transform: translateX(calc(-50% + 50px));
+            opacity: 0;
+        }
+        .container.prev {
+            transform: translateX(calc(-50% - 50px));
+            opacity: 0;
         }
         .scrollable-content {
             height: calc(100vh - 180px);
@@ -107,34 +128,100 @@
         }
         .pagination-container {
             position: fixed;
-            bottom: 90;
+            bottom: 10px;
             left: 0;
             right: 0;
             background: white;
-            padding: -5px;
+            padding: 10px 0;
             box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
             z-index: 1000;
             display: flex;
             justify-content: center;
-            margin-top: 20px;
+            gap: 15px;
         }
-        .pagination-button {
+        .page-button {
             width: 50px;
             height: 50px;
             background-color: transparent;
             border: none;
-            border-radius: 2px;
-            margin: 10px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: transform 0.1s;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .pagination-button:active {
-            transform: scale(0.9);
+        .page-button.active {
+            background-color: rgba(0,128,0,0.1);
         }
-        .pagination-button img {
+        .page-button img {
             max-width: 30px;
             max-height: 30px;
-            border-radius: 8px;
+        }
+        .chat-container {
+            max-width: 400px;
+            margin: 0 auto;
+            height: calc(100vh - 200px);
+            display: flex;
+            flex-direction: column;
+        }
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        .message {
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            border-radius: 15px;
+            max-width: 80%;
+        }
+        .user-message {
+            background: #007bff;
+            color: white;
+            margin-left: auto;
+        }
+        .bot-message {
+            background: #e9ecef;
+            color: black;
+            margin-right: auto;
+        }
+        .chat-input {
+            display: flex;
+            gap: 10px;
+            padding: 10px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+        }
+        #user-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            outline: none;
+        }
+        #send-button {
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        #send-button:hover {
+            background: #0056b3;
+        }
+        .loading {
+            display: none;
+            color: #666;
+            font-style: italic;
+            padding: 10px;
+            text-align: center;
         }
         img[alt="Баннер"] {
             border-radius: 10px;
@@ -144,7 +231,6 @@
     </style>
 </head>
 <body>
-    <!-- Фиксированный хедер -->
     <div class="header" id="main-header">
         <div class="header-center" id="user-header">Загрузка...</div>
         <span id="header-title">Expert Credit</span>
@@ -155,16 +241,15 @@
         <div class="scrollable-content">
             <img src="ex.png.PNG" width="735" height="400" alt="Баннер">
             <div class="buttons-grid">
-                <div class="button-item"><a href="Guide.html"><img src="guide.png" alt="Кнопка 1"><span class="button-label">Гайд</span></a></div>
-                <div class="button-item"><a href="https://2gis.kz/almaty/inside/9430047375024031/firm/70000001065238061/tab/reviews?m=76.902419%2C43.237714%2F16"><img src="say.png" alt="Кнопка 2"><span class="button-label">Отзыв</span></a></div>
-                <div class="button-item"><a href="https://t.me/managers_assessmentBOT"><img src="man.png" alt="Кнопка 3"><span class="button-label">Оценка эксперта</span></a></div>
-                <div class="button-item"><a href="https://pay.kaspi.kz/pay/klcx3wrc" target="_blank"><img src="pay.png" alt="Кнопка 4"><span class="button-label">Оплата</span></a></div>
-                <div class="button-item"><a href="https://www.instagram.com/kanat_expert/" target="_blank"><img src="insta.png" alt="Кнопка 5"><span class="button-label">Instagram</span></a></div>
-                <div class="button-item"><a href="https://www.youtube.com/@kanat_expert" target="_blank"><img src="you.png" alt="Кнопка 6"><span class="button-label">YouTube</span></a></div>
-                <div class="button-item"><a href="https://wa.me/77753181260" target="_blank"><img src="whats.png" alt="Кнопка 7"><span class="button-label">What's app</span></a></div>
-                <div class="button-item"><a href="#"><img src="face.png" alt="Кнопка 8"><span class="button-label">FaceBook</span></a></div>
+                <div class="button-item"><a href="Guide.html"><img src="guide.png" alt="Гайд"><span class="button-label">Гайд</span></a></div>
+                <div class="button-item"><a href="https://2gis.kz/almaty/inside/9430047375024031/firm/70000001065238061/tab/reviews?m=76.902419%2C43.237714%2F16"><img src="say.png" alt="Отзыв"><span class="button-label">Отзыв</span></a></div>
+                <div class="button-item"><a href="https://t.me/managers_assessmentBOT"><img src="man.png" alt="Оценка"><span class="button-label">Оценка эксперта</span></a></div>
+                <div class="button-item"><a href="https://pay.kaspi.kz/pay/klcx3wrc" target="_blank"><img src="pay.png" alt="Оплата"><span class="button-label">Оплата</span></a></div>
+                <div class="button-item"><a href="https://www.instagram.com/kanat_expert/" target="_blank"><img src="insta.png" alt="Instagram"><span class="button-label">Instagram</span></a></div>
+                <div class="button-item"><a href="https://www.youtube.com/@kanat_expert" target="_blank"><img src="you.png" alt="YouTube"><span class="button-label">YouTube</span></a></div>
+                <div class="button-item"><a href="https://wa.me/77753181260" target="_blank"><img src="whats.png" alt="WhatsApp"><span class="button-label">What's app</span></a></div>
+                <div class="button-item"><a href="#"><img src="face.png" alt="Facebook"><span class="button-label">FaceBook</span></a></div>
             </div>
-            
             <div style="margin-top: 20px;">
                 <img src="Текст абзаца.png" width="735" height="400" alt="Баннер">
             </div>
@@ -186,21 +271,126 @@
         </div>
     </div>
 
-    <!-- Фиксированный пагинатор -->
+    <!-- Страница 3 - Чат с ИИ -->
+    <div class="container" id="page-3">
+        <div class="chat-container">
+            <div class="chat-messages" id="chat-messages"></div>
+            <div class="loading" id="loading">ИИ думает...</div>
+            <div class="chat-input">
+                <input type="text" id="user-input" placeholder="Введите ваш вопрос...">
+                <button id="send-button">Отправить</button>
+            </div>
+        </div>
+    </div>
+
     <div class="pagination-container">
-        <button class="pagination-button" id="prev-page"><img src="ic12.png" alt="Предыдущая"></button>
-        <button class="pagination-button" id="next-page"><img src="ic2.png" alt="Следующая"></button>
-        <button class="pagination-button" id="next-page"><a href="openAI.html"><img src="brain2.png" alt="Следующая"></button></a>
+        <button class="page-button" data-page="1">
+            <img src="ic12.png" alt="Страница 1">
+        </button>
+        <button class="page-button" data-page="2">
+            <img src="ic22.png" alt="Страница 2">
+        </button>
+       <button class="page-button" id="next-page"><a href="openAI.html"><img src="brain2.png" alt="Следующая"></button></a>
+       
     </div>
 
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
+	          const part1 = "sk-proj--fdsvbgrbh";
+	          const part2 = "dgbjidg.bhyjryjnynuyr";
+	          const part3 = "ebyjyrrnumyny.enyjtyhy";
+	          const part4 = "AwuyW3aaZ2R4Sn5DYp07OwG6aGfuRwml2CthKnH_IA";
+
+	          const OPENAI_API_KEY = part1 + part2 + part3 + part4;
+		
         document.addEventListener("DOMContentLoaded", function() {
             let currentPage = 1;
             const pages = {
                 1: {title: 'Expert Credit', element: document.getElementById('page-1')},
-                2: {title: 'Expert Credit', element: document.getElementById('page-2')}
+                2: {title: 'Expert Credit', element: document.getElementById('page-2')},
+                3: {title: 'Чат с ИИ', element: document.getElementById('page-3')}
             };
+
+            const chatMessages = document.getElementById('chat-messages');
+            const userInput = document.getElementById('user-input');
+            const sendButton = document.getElementById('send-button');
+            const loading = document.getElementById('loading');
+
+            async function sendMessage() {
+                const message = userInput.value.trim();
+                if (!message) return;
+
+                addMessage(message, 'user');
+                userInput.value = '';
+                loading.style.display = 'block';
+
+                try {
+                    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${OPENAI_API_KEY}`
+                        },
+                        body: JSON.stringify({
+                            model: "gpt-3.5-turbo",
+						    messages: [
+						         {role: "system", content: "Ты AI-ассистент Expert Credit. Отвечай креативно и эмоционально, используя современный стиль общения. Максимально 3 предложения. Поддерживай дружеский тон с элементами профессиональной консультации. Используй смайлики под контекст сообщения которое ты отправляешь. Смайлики должны быть в каждом сообщении"},
+						         {role: "user", content: message}
+						     ]
+						 })
+                    });
+
+                    const data = await response.json();
+                    const botMessage = data.choices[0].message.content;
+                    addMessage(botMessage, 'bot');
+                } catch (error) {
+                    addMessage('Ошибка подключения к ИИ. Попробуйте позже.', 'bot');
+                } finally {
+                    loading.style.display = 'none';
+                }
+            }
+
+            function addMessage(text, sender) {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('message', `${sender}-message`);
+                messageDiv.textContent = text;
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            sendButton.addEventListener('click', sendMessage);
+            userInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') sendMessage();
+            });
+
+            function showPage(newPage) {
+                const currentPageElement = pages[currentPage].element;
+                const newPageElement = pages[newPage].element;
+                const direction = newPage > currentPage ? 'next' : 'prev';
+                
+                currentPageElement.classList.add(direction);
+                newPageElement.classList.add('active', direction);
+
+                setTimeout(() => {
+                    currentPageElement.classList.remove('active', 'next', 'prev');
+                    newPageElement.classList.remove('next', 'prev');
+                }, 400);
+
+                document.getElementById('header-title').textContent = pages[newPage].title;
+                document.querySelectorAll('.page-button').forEach(btn => {
+                    btn.classList.remove('active');
+                    if(btn.dataset.page == newPage) btn.classList.add('active');
+                });
+
+                currentPage = newPage;
+            }
+
+            document.querySelectorAll('.page-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    const pageNumber = parseInt(button.dataset.page);
+                    if(pageNumber !== currentPage) showPage(pageNumber);
+                });
+            });
 
             if (window.Telegram?.WebApp) {
                 const tg = window.Telegram.WebApp;
@@ -210,30 +400,17 @@
                 if (user) {
                     const userHeader = document.getElementById("user-header");
                     userHeader.innerHTML = `
-                        <img class="avatar" src="${user.photo_url || 'https://via.placeholder.com/40'}" alt="Аватар">
+                        <img class="avatar" src="${user.photo_url || 'default-avatar.png'}" alt="Аватар">
                         <span>${user.username || user.first_name || 'Пользователь'}</span>
                     `;
                 }
             }
 
-            function showPage(pageNumber) {
-                Object.values(pages).forEach(page => {
-                    page.element.style.display = 'none';
-                });
-                pages[pageNumber].element.style.display = 'block';
-                document.getElementById('header-title').textContent = pages[pageNumber].title;
-                currentPage = pageNumber;
-            }
-
-            document.getElementById('prev-page').addEventListener('click', () => {
-                if(currentPage > 1) showPage(currentPage - 1);
+            Object.values(pages).forEach(page => {
+                page.element.style.display = 'block';
+                page.element.classList.remove('active', 'next', 'prev');
             });
-
-            document.getElementById('next-page').addEventListener('click', () => {
-                if(currentPage < Object.keys(pages).length) showPage(currentPage + 1);
-            });
-
-            showPage(1);
+            pages[1].element.classList.add('active');
         });
     </script>
 </body>

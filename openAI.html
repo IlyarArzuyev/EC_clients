@@ -403,6 +403,15 @@
                 sendMessage();
             }
         });
+	    
+document.addEventListener('click', (event) => {
+    const inputArea = document.querySelector('.input-area');
+    const isClickInside = inputArea.contains(event.target);
+
+    if (!isClickInside) {
+        document.getElementById('messageInput').blur();
+    }
+});    
     </script>
 </body>
 </html>
